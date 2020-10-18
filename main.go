@@ -22,15 +22,15 @@ var (
 	cachedServiceResultsTimestamp time.Time
 )
 
-func getGatusPortFromEnv() string {
-    if value, ok := os.LookupEnv("GATUS_PORT"); ok {
+func getPortFromEnv() string {
+    if value, ok := os.LookupEnv("PORT"); ok {
         return value
     }
     return "8080"
 }
 
 func main() {
-	gatusPort := getGatusPortFromEnv()
+	port := getPortFromEnv()
 	cfg := loadConfiguration()
 	resultsHandler := serviceResultsHandler
 	if cfg.Security != nil && cfg.Security.IsValid() {
@@ -42,9 +42,9 @@ func main() {
 	if cfg.Metrics {
 		http.Handle("/metrics", promhttp.Handler())
 	}
-	log.Println("[main][main] Listening on port "+gatusPort)
+	log.Println("[main][main] Listening on port "+port)
 	go watchdog.Monitor(cfg)
-	log.Fatal(http.ListenAndServe(":"+gatusPort, nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func loadConfiguration() *config.Config {
